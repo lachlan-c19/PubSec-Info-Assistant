@@ -21,7 +21,7 @@ from azure.storage.blob import (
 from text import nonewlines
 from core.modelhelper import get_token_limit
 import requests
-import os
+from .environment import EnvironmentCredential
 
 class ChatReadRetrieveReadApproach(Approach):
     """Approach that uses a simple retrieve-then-read implementation, using the Azure AI Search and
@@ -135,8 +135,8 @@ class ChatReadRetrieveReadApproach(Approach):
         
     # def run(self, history: list[dict], overrides: dict) -> any:
     async def run(self, history: Sequence[dict[str, str]], overrides: dict[str, Any], citation_lookup: dict[str, Any], thought_chain: dict[str, Any]) -> Any:
-        api_url = ENV["api_l_app"]
-        u_email = os.environ[EnvironmentVariables.AZURE_USERNAME]
+        api_url = os.environ.get[EnvironmentVariables.api_l_app]
+        u_email = os.environ.get(EnvironmentVariables.AZURE_USERNAME)
         def call_logic_app_api(api_url_parsed, email):
             try:
                 headers = {
