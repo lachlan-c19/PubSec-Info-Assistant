@@ -22,6 +22,7 @@ from text import nonewlines
 from core.modelhelper import get_token_limit
 import requests
 
+
 class ChatReadRetrieveReadApproach(Approach):
     """Approach that uses a simple retrieve-then-read implementation, using the Azure AI Search and
     Azure OpenAI APIs directly. It first retrieves top documents from search,
@@ -134,7 +135,24 @@ class ChatReadRetrieveReadApproach(Approach):
         
     # def run(self, history: list[dict], overrides: dict) -> any:
     async def run(self, history: Sequence[dict[str, str]], overrides: dict[str, Any], citation_lookup: dict[str, Any], thought_chain: dict[str, Any]) -> Any:
-
+        api_url = ENV["api_l_app"]
+        u_email =
+        def call_logic_app_api(api_url_parsed, email):
+            try:
+                headers = {
+                "Content-Type": "application/json"
+                }
+        
+                data = {
+                    "EmployeeEmail": "{email}"
+                }
+                response = requests.post(api_url_parsed, json=data, headers=headers)
+                return response.text
+        
+            except requests.RequestException as e:
+                print(f"An error occurred: {e}")
+                return None
+        parsed_filter = call_logic_app_api(api_url, U_email)
         log = logging.getLogger("uvicorn")
         log.setLevel('DEBUG')
         log.propagate = True
@@ -212,7 +230,7 @@ class ChatReadRetrieveReadApproach(Approach):
             search_filter = None
         if tags_filter != "" :
             if search_filter is not None:
-                search_filter = search_filter + f" and tags/any(t: search.in(t, '{tags_filter}', ','))"
+                search_filter = search_filter + parsed_filter
             else:
                 search_filter = f"tags/any(t: search.in(t, '{tags_filter}', ','))"
 
